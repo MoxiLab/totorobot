@@ -51,4 +51,4 @@ connect();
 process.on("unhandledRejection", console.error);
 process.on("uncaughtException", console.error);
 
-/* Totoro by: Nia */
+/* Totoro.wa by: Nia */

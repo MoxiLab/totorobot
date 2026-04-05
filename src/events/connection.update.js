@@ -29,7 +29,7 @@ export default {
           }, 5000);
         }
       } else {
-        console.log("El usuario cerró sesión.");
+        console.log("Se cerró sesión.");
       }
     } else if (connection === "open") {
       console.log("Conexión establecida correctamente.");

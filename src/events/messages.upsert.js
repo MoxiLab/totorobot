@@ -22,11 +22,9 @@ export default {
     const args = body.slice(1).split(/ +/);
     const label = args.shift().toLowerCase();
 
-    const entry = Array.from(globalThis.commands).find(([name, data]) => {
-      return name === label || data.alias?.includes(label);
+    const command = globalThis.commands.find((cmd) => {
+      return cmd.name === label || cmd.alias?.includes(label);
     });
-
-    const command = entry?.[1];
 
     if (!command || (command.dev && !dev)) return;
 
