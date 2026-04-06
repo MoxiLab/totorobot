@@ -1,0 +1,28 @@
+{
+  "name": "totorobot",
+  "version": "1.0.0",
+  "description": "WhatsApp bot con Baileys",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js --exec node --input-type=module"
+  },
+  "keywords": [
+    "whatsapp",
+    "baileys",
+    "bot"
+  ],
+  "author": "Nia",
+  "license": "MIT",
+  "dependencies": {
+    "baileys": "^6.4.0",
+    "enquirer": "^2.4.1",
+    "pino": "^8.21.0",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
