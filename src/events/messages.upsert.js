@@ -6,10 +6,7 @@ export default {
 
     const message = msg.messages[0];
 
-    if (!message.message || !message.key) return;
-
-    const isDevEnabled =
-      String(process.env.DEV_MODE || "false") === "true" || Boolean(message.key.fromMe);
+    if (!message.message || !message.key || message.key.fromMe) return;
 
     const body =
       message.message?.extendedTextMessage?.text ||
@@ -29,16 +26,10 @@ export default {
       return cmd.name === label || cmd.alias?.includes(label);
     });
 
-    if (!command) return;
-
-    if (command.dev && !isDevEnabled) {
-      return sock.sendMessage(message.key.remoteJid, {
-        text: "Comando dev bloqueado. Activa DEV_MODE=true en tu .env para usarlo.",
-      });
-    }
+    if (!command || (command.dev && !dev)) return;
 
     message.quoted = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
 
-    await command.run(sock, message, args);
+    command.run(sock, message, args);
   },
 };
