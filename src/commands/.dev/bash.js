@@ -3,9 +3,6 @@ import { exec } from "child_process";
 export default {
   name: "bash",
   dev: true,
-  category: "Dev Tools",
-  description: "Ejecuta un comando de terminal en el host.",
-  usage: "!bash <comando>",
 
   async run(sock, msg, args) {
     if (!args.length) return;
