@@ -11,8 +11,13 @@ process.loadEnvFile();
 
 globalThis.commands = new TotoData();
 
+let connectPromise;
+
 export async function connect() {
-  const { state, saveCreds } = await useMultiFileAuthState("sessions/totoro");
+  if (connectPromise) return connectPromise;
+
+  connectPromise = (async () => {
+    const { state, saveCreds } = await useMultiFileAuthState("sessions/totoro");
 
   const sock = makeWASocket({
     cachedGroupMetadata: (jid) => getCache(jid),
@@ -42,8 +47,15 @@ export async function connect() {
     if (typeof handler === "function") handler(sock);
   }
 
-  sock.ev.on("call", ([{ id, from }]) => sock.rejectCall(id, from));
-  sock.ev.on("creds.update", saveCreds);
+    sock.ev.on("call", ([{ id, from }]) => sock.rejectCall(id, from));
+    sock.ev.on("creds.update", saveCreds);
+
+    return sock;
+  })().finally(() => {
+    connectPromise = undefined;
+  });
+
+  return connectPromise;
 }
 
 startServer(process.env.PORT || 3000);

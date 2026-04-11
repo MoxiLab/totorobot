@@ -8,6 +8,29 @@ export default {
 
     if (!message.message || !message.key || message.key.fromMe) return;
 
+    // Baileys puede emitir el mismo mensaje más de una vez (retries/sync).
+    // Dedupe simple por message.key.id para evitar ejecutar comandos duplicados.
+    const messageId = message.key?.id;
+    if (!globalThis.__toto_seenMessageIds) {
+      globalThis.__toto_seenMessageIds = new Map();
+    }
+
+    if (messageId) {
+      const seen = globalThis.__toto_seenMessageIds;
+      const now = Date.now();
+      const last = seen.get(messageId);
+
+      if (last && now - last < 60_000) return;
+
+      seen.set(messageId, now);
+
+      if (seen.size > 1000) {
+        for (const [id, ts] of seen) {
+          if (now - ts > 120_000) seen.delete(id);
+        }
+      }
+    }
+
     const body =
       message.message?.extendedTextMessage?.text ||
       message.message?.ephemeralMessage?.message?.extendedTextMessage?.text ||
