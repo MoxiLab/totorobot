@@ -2,6 +2,7 @@ import { exec } from "child_process";
 
 export default {
   name: "bash",
+  category: "dev",
   dev: true,
 
   async run(sock, msg, args) {

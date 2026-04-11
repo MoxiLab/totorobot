@@ -28,6 +28,12 @@ export default {
 
     if (!command) return;
 
+    const devModeEnabled = String(process.env.DEV_MODE || "false") === "true";
+
+    if (command.dev && !devModeEnabled) {
+      return;
+    }
+
     message.quoted = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
 
     command.run(sock, message, args);

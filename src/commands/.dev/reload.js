@@ -3,7 +3,7 @@ import loadCommands from "../../handlers/commands.js";
 export default {
   name: "reload",
   alias: ["r", "rl"],
-  category: "Dev Tools",
+  category: "dev",
   dev: true,
   description: "Recarga todos los comandos sin reiniciar el bot.",
   usage: "!reload",

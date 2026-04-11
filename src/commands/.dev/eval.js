@@ -2,6 +2,7 @@ import { inspect } from "util";
 
 export default {
   name: "eval",
+  category: "dev",
   dev: true,
 
   async run(sock, msg, args) {
