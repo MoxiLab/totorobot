@@ -26,7 +26,7 @@ export default {
       return cmd.name === label || cmd.alias?.includes(label);
     });
 
-    if (!command || (command.dev && !dev)) return;
+    if (!command) return;
 
     message.quoted = message.message?.extendedTextMessage?.contextInfo?.quotedMessage;
 

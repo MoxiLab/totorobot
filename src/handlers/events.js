@@ -5,7 +5,7 @@ const EVENTS_PATH = resolve("src", "events");
 
 let eventsCount = 0;
 
-export default async function (sock) {
+export default async function (sock, context = {}) {
   const folder = await readdir(EVENTS_PATH);
 
   if (!folder.length) return;
@@ -15,7 +15,7 @@ export default async function (sock) {
 
     const method = event.once ? "once" : "on";
 
-    sock.ev[method](event.name, (...args) => event.run(...args, sock));
+    sock.ev[method](event.name, (...args) => event.run(...args, sock, context));
 
     eventsCount++;
   }

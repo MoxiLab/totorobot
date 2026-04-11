@@ -1,19 +1,31 @@
 {
-  "name": "totoro.wa",
+  "name": "totorobot",
   "version": "1.0.0",
-  "description": "",
+  "description": "WhatsApp bot con Baileys",
   "main": "src/index.js",
+  "type": "module",
   "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js --exec node --input-type=module",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "module",
+  "keywords": [
+    "whatsapp",
+    "baileys",
+    "bot"
+  ],
+  "author": "Nia",
+  "license": "MIT",
   "dependencies": {
     "baileys": "^7.0.0-rc.9",
     "enquirer": "^2.4.1",
+    "express": "^5.2.1",
+    "pino": "^8.21.0",
+    "qrcode": "^1.5.4",
     "sqlite": "^5.1.1",
     "sqlite3": "^6.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
   }
 }

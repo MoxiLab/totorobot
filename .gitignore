@@ -1,0 +1,10 @@
+# Archivos
+.env
+package-lock.json
+
+# Carpetas
+/.vscode/sftp.json
+/node_modules
+/sessions
+/temp
+/.cache

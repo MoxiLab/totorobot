@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Totoro Subbots</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Nunito", system-ui, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: linear-gradient(135deg, #a8e6cf 0%, #dcedc1 100%);
+        margin: 0;
+        color: #333;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 3rem 2rem;
+        border-radius: 24px;
+        box-shadow:
+          0 10px 30px rgba(0, 0, 0, 0.1),
+          0 1px 8px rgba(0, 0, 0, 0.05);
+        text-align: center;
+        width: 100%;
+        max-width: 350px;
+        transition: transform 0.3s ease;
+      }
+      h2 {
+        margin-top: 0;
+        color: #557a46;
+        font-weight: 800;
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+      }
+      .tabs {
+        display: flex;
+        margin-bottom: 1.5rem;
+        background: #f4f9f4;
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .tab {
+        flex: 1;
+        padding: 10px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: 0.3s;
+      }
+      .tab.active {
+        background: #88ab8e;
+        color: white;
+      }
+      input {
+        padding: 14px;
+        margin-bottom: 1rem;
+        border: 2px solid transparent;
+        background: #f4f9f4;
+        border-radius: 12px;
+        width: calc(100% - 32px);
+        font-size: 16px;
+        font-family: inherit;
+        transition: all 0.3s ease;
+        outline: none;
+      }
+      input:focus {
+        border-color: #88ab8e;
+        background: #ffffff;
+        box-shadow: 0 0 0 4px rgba(136, 171, 142, 0.2);
+      }
+      button {
+        padding: 14px 24px;
+        background: #88ab8e;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 800;
+        font-size: 16px;
+        width: 100%;
+        font-family: inherit;
+        transition: all 0.3s ease;
+      }
+      button:hover {
+        background: #719377;
+        transform: scale(1.02);
+      }
+      #result {
+        font-size: 18px;
+        font-weight: 800;
+        margin-top: 24px;
+        color: #557a46;
+        min-height: 30px;
+        word-break: break-all;
+      }
+      #qr-container img {
+        width: 200px;
+        height: 200px;
+        border-radius: 12px;
+        margin-top: 15px;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h2>Conectar Subbot</h2>
+
+      <div class="tabs">
+        <div class="tab active" onclick="setMode('code')" id="tab-code">Código</div>
+        <div class="tab" onclick="setMode('qr')" id="tab-qr">QR</div>
+      </div>
+
+      <div id="code-section">
+        <input type="tel" id="phone" placeholder="Ingresa tu número" autocomplete="off" />
+      </div>
+
+      <button onclick="conectar()">Obtener</button>
+
+      <div id="result"></div>
+      <div id="qr-container">
+        <img id="qr-img" src="" alt="QR Code" />
+      </div>
+    </div>
+
+    <script>
+      let mode = "code";
+
+      function setMode(newMode) {
+        mode = newMode;
+        document.getElementById("tab-code").classList.toggle("active", mode === "code");
+        document.getElementById("tab-qr").classList.toggle("active", mode === "qr");
+        document.getElementById("code-section").style.display = mode === "code" ? "block" : "none";
+        document.getElementById("result").innerText = "";
+        document.getElementById("qr-img").style.display = "none";
+      }
+
+      async function conectar() {
+        const phone = document.getElementById("phone").value;
+        const resultDiv = document.getElementById("result");
+        const qrImg = document.getElementById("qr-img");
+
+        if (mode === "code" && !phone.trim()) {
+          resultDiv.innerText = "Ingresa un número";
+          return;
+        }
+
+        resultDiv.innerText = "Cargando...";
+        qrImg.style.display = "none";
+
+        try {
+          const res = await fetch("/api/link", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              type: mode,
+              phone: mode === "code" ? phone : null,
+            }),
+          });
+
+          const data = await res.json();
+
+          if (data.error) {
+            resultDiv.innerText = data.error;
+          } else if (data.code) {
+            resultDiv.innerText = `Código: ${data.code}`;
+          } else if (data.qr) {
+            resultDiv.innerText = "Escanea el código QR:";
+            qrImg.src = data.qr;
+            qrImg.style.display = "inline-block";
+          } else if (data.connected) {
+            resultDiv.innerText = "Ya está conectado";
+          }
+        } catch (e) {
+          resultDiv.innerText = "Error al conectar";
+        }
+      }
+    </script>
+  </body>
+</html>

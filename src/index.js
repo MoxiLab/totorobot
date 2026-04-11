@@ -4,6 +4,8 @@ import { getCache } from "./utils/cache.js";
 import { readdir } from "fs/promises";
 import enquirer from "enquirer";
 import { pino } from "pino";
+import { startServer } from "./server/index.js";
+import { loadSavedSubbots } from "./utils/SubbotManager.js";
 
 process.loadEnvFile();
 
@@ -28,10 +30,9 @@ export async function connect() {
     });
 
     const phoneNumber = response.phoneNumber.replace(/\D+/g, "");
+    const code = await sock.requestPairingCode(phoneNumber, "TOTOPAIR");
 
-    const code = await sock.requestPairingCode(phoneNumber);
-
-    console.log(`Tu codigo de conexión es: ${code}`);
+    console.log(`\n Tu codigo de conexión es: ${code}`);
   }
 
   const folder = await readdir("./src/handlers");
@@ -42,13 +43,11 @@ export async function connect() {
   }
 
   sock.ev.on("call", ([{ id, from }]) => sock.rejectCall(id, from));
-
   sock.ev.on("creds.update", saveCreds);
 }
 
-connect();
+startServer(process.env.PORT || 3000);
+connect().then(loadSavedSubbots);
 
 process.on("unhandledRejection", console.error);
 process.on("uncaughtException", console.error);
-
-/* Totoro.wa by: Nia */

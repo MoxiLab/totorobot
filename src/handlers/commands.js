@@ -3,8 +3,16 @@ import { resolve } from "path";
 
 const CMD_PATH = resolve("src", "commands");
 
-export default async function () {
-  if (globalThis.commands.size) return;
+export default async function (options = {}) {
+  const { force = false } = options;
+
+  if (globalThis.commands.size && !force) return;
+
+  if (force) {
+    globalThis.commands.clear();
+  }
+
+  const cacheSuffix = force ? `?reload=${Date.now()}` : "";
 
   const directory = await readdir(CMD_PATH);
 
@@ -12,10 +20,10 @@ export default async function () {
     const files = await readdir(resolve(CMD_PATH, folder));
 
     for (const file of files) {
-      const { default: command } = await import(`../commands/${folder}/${file}`);
+      const { default: command } = await import(`../commands/${folder}/${file}${cacheSuffix}`);
       globalThis.commands.set(command.name, command);
     }
   }
 
-  console.log(`Comandos cargados:`, globalThis.commands.size);
+  console.log(force ? "Comandos recargados:" : "Comandos cargados:", globalThis.commands.size);
 }
