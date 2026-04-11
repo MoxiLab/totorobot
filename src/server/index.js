@@ -51,6 +51,6 @@ app.get("/api/status", (req, res) => {
 
 export function startServer(port = 3000) {
   app.listen(port, () => {
-    console.log(`Servidor web corriendo en http://localhost:${port}`);
+    console.log(`Servidor web corriendo en http://${process.env.HOST}:${port}`);
   });
 }
