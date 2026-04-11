@@ -20,5 +20,5 @@ export default async function (sock, context = {}) {
     eventsCount++;
   }
 
-  console.log("Eventos cargados:", eventsCount);
+  //console.log("Eventos cargados:", eventsCount);
 }
